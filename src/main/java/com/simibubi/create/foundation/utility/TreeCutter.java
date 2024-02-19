@@ -65,7 +65,7 @@ public class TreeCutter {
 	 * @return null if not found or not fully cut
 	 */
 	@Nonnull
-	public static Tree findTree(@Nullable BlockGetter reader, BlockPos pos) {
+	public static Tree findTree(@Nullable BlockGetter reader, BlockPos pos, BlockState initialState) {
 		if (reader == null)
 			return NO_TREE;
 
@@ -76,9 +76,7 @@ public class TreeCutter {
 		List<BlockPos> frontier = new LinkedList<>();
 
 		// Bamboo, Sugar Cane, Cactus
-		BlockState stateAbove = reader.getBlockState(pos.above());
-		if (isVerticalPlant(stateAbove)) {
-			logs.add(pos.above());
+		if (isVerticalPlant(initialState)) {
 			for (int i = 1; i < 256; i++) {
 				BlockPos current = pos.above(i);
 				if (!isVerticalPlant(reader.getBlockState(current)))
@@ -90,23 +88,26 @@ public class TreeCutter {
 		}
 
 		// Chorus
-		if (isChorus(stateAbove)) {
-			frontier.add(pos.above());
-			while (!frontier.isEmpty()) {
-				BlockPos current = frontier.remove(0);
-				visited.add(current);
-				logs.add(current);
-				for (Direction direction : Iterate.directions) {
-					BlockPos offset = current.relative(direction);
-					if (visited.contains(offset))
-						continue;
-					if (!isChorus(reader.getBlockState(offset)))
-						continue;
-					frontier.add(offset);
+		BlockState stateAbove = reader.getBlockState(pos.above());
+		if(isChorus(initialState)) {
+			if (isChorus(stateAbove)) {
+				frontier.add(pos.above());
+				while (!frontier.isEmpty()) {
+					BlockPos current = frontier.remove(0);
+					visited.add(current);
+					logs.add(current);
+					for (Direction direction : Iterate.directions) {
+						BlockPos offset = current.relative(direction);
+						if (visited.contains(offset))
+							continue;
+						if (!isChorus(reader.getBlockState(offset)))
+							continue;
+						frontier.add(offset);
+					}
 				}
+				Collections.reverse(logs);
+				return new Tree(logs, leaves, attachments);
 			}
-			Collections.reverse(logs);
-			return new Tree(logs, leaves, attachments);
 		}
 
 		// Regular Tree
