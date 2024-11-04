@@ -34,7 +34,7 @@ public class ValueBoxRenderer {
 		float zOffset = (!blockItem ? -.15f : 0) + customZOffset(filter.getItem());
 		ms.scale(scale, scale, scale);
 		ms.translate(0, 0, zOffset);
-		itemRenderer.renderStatic(filter, ItemDisplayContext.FIXED, light, overlay, ms, buffer, mc.level, 0);
+		itemRenderer.render(filter, ItemDisplayContext.FIXED, false, ms, buffer, light, overlay, modelWithOverrides);
 	}
 
 	public static void renderFlatItemIntoValueBox(ItemStack filter, PoseStack ms, MultiBufferSource buffer, int light,
