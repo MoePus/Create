@@ -5,11 +5,12 @@ import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTank
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour.TankSegment;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import com.simibubi.create.foundation.fluid.FluidRenderer;
-import com.simibubi.create.foundation.ponder.PonderWorld;
 import com.simibubi.create.foundation.utility.AngleHelper;
 import com.simibubi.create.foundation.utility.AnimationTickHolder;
 import com.simibubi.create.foundation.utility.IntAttached;
 import com.simibubi.create.foundation.utility.VecHelper;
+
+import com.simibubi.create.foundation.utility.worldWrappers.WrappedWorld;
 
 import dev.engine_room.flywheel.lib.transform.TransformStack;
 import net.minecraft.client.Minecraft;
@@ -41,7 +42,7 @@ public class BasinRenderer extends SmartBlockEntityRenderer<BasinBlockEntity> {
 		super.renderSafe(basin, partialTicks, ms, buffer, light, overlay);
 
 		Entity camera = Minecraft.getInstance().cameraEntity;
-		if (basin.getLevel() instanceof PonderWorld || (camera != null && basin.getBlockPos().getY() - 1.0F <= camera.getY())) {
+		if (basin.getLevel() instanceof WrappedWorld || (camera != null && basin.getBlockPos().getY() + 1.0F <= camera.getEyeY())) {
 			float fluidLevel = renderFluids(basin, partialTicks, ms, buffer, light, overlay);
 			renderInsideItems(basin, partialTicks, ms, buffer, light, overlay, fluidLevel);
 		}
