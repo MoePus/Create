@@ -20,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class FilterItemStack {
-	private ItemStack filterItemStack;
+	private final ItemStack filterItemStack;
 	private boolean fluidExtracted;
 	private FluidStack filterFluidStack;
 
@@ -106,7 +106,7 @@ public class FilterItemStack {
 		if (!matchNBT)
 			return filterFluidStack.getFluid()
 				.isSame(stack.getFluid());
-		return FluidStack.isSameFluidSameComponents(filterFluidStack, stack);
+		return net.neoforged.neoforge.fluids.FluidStack.isSameFluidSameComponents(filterFluidStack, stack);
 	}
 
 	//

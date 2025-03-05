@@ -3,6 +3,7 @@ package com.simibubi.create.content.decoration.copycat;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllShapes;
@@ -16,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -66,7 +66,10 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 
 	@Override
 	public boolean isIgnoredConnectivitySide(BlockAndTintGetter reader, BlockState state, Direction face,
-		BlockPos fromPos, BlockPos toPos) {
+											 @Nullable BlockPos fromPos, @Nullable BlockPos toPos) {
+		if (fromPos == null || toPos == null)
+			return true;
+
 		BlockState toState = reader.getBlockState(toPos);
 
 		if (!toState.is(this))
@@ -84,12 +87,12 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 		return facing == toState.getValue(FACING)
 			.getOpposite()
 			&& !(coord != 0 && coord != facing.getAxisDirection()
-				.getStep());
+			.getStep());
 	}
 
 	@Override
 	public boolean canConnectTexturesToward(BlockAndTintGetter reader, BlockPos fromPos, BlockPos toPos,
-		BlockState state) {
+											BlockState state) {
 		Direction facing = state.getValue(FACING);
 		BlockState toState = reader.getBlockState(toPos);
 		BlockPos diff = fromPos.subtract(toPos);
@@ -164,7 +167,7 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 
 	@Override
 	public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState,
-		Direction dir) {
+									 Direction dir) {
 		if (state.is(this) == neighborState.is(this)
 			&& getMaterial(level, pos).skipRendering(getMaterial(level, pos.relative(dir)), dir.getOpposite()))
 			return isOccluded(state, neighborState, dir);
@@ -221,7 +224,7 @@ public class CopycatStepBlock extends WaterloggedCopycatBlock {
 
 			if (offset.isSuccessful())
 				offset.withTransform(offset.getTransform()
-						.andThen(s -> s.setValue(HALF, state.getValue(HALF))));
+					.andThen(s -> s.setValue(HALF, state.getValue(HALF))));
 
 			return offset;
 		}

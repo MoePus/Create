@@ -4,7 +4,6 @@ import static com.simibubi.create.AllTags.AllItemTags.CREATE_INGOTS;
 import static com.simibubi.create.AllTags.AllItemTags.CRUSHED_RAW_MATERIALS;
 import static com.simibubi.create.AllTags.AllItemTags.PLATES;
 import static com.simibubi.create.AllTags.commonItemTag;
-import static com.simibubi.create.Create.REGISTRATE;
 import static com.simibubi.create.foundation.data.recipe.CompatMetals.ALUMINUM;
 import static com.simibubi.create.foundation.data.recipe.CompatMetals.LEAD;
 import static com.simibubi.create.foundation.data.recipe.CompatMetals.NICKEL;
@@ -87,6 +86,7 @@ import net.minecraft.world.item.SwordItem;
 import net.neoforged.neoforge.common.Tags;
 
 public class AllItems {
+	private static final CreateRegistrate REGISTRATE = Create.registrate();
 
 	static {
 		REGISTRATE.setCreativeTab(AllCreativeModeTabs.BASE_CREATIVE_TAB);
@@ -202,9 +202,9 @@ public class AllItems {
 			.register();
 
 	public static final ItemEntry<Item>
-		COPPER_NUGGET = taggedIngredient("copper_nugget", commonItemTag("nuggets/copper"), Tags.Items.NUGGETS),
-		ZINC_NUGGET = taggedIngredient("zinc_nugget", commonItemTag("nuggets/zinc"), Tags.Items.NUGGETS),
-		BRASS_NUGGET = taggedIngredient("brass_nugget", commonItemTag("nuggets/brass"), Tags.Items.NUGGETS);
+		COPPER_NUGGET = taggedIngredient("copper_nugget", commonItemTag("nuggets/copper"), net.neoforged.neoforge.common.Tags.Items.NUGGETS),
+		ZINC_NUGGET = taggedIngredient("zinc_nugget", commonItemTag("nuggets/zinc"), net.neoforged.neoforge.common.Tags.Items.NUGGETS),
+		BRASS_NUGGET = taggedIngredient("brass_nugget", commonItemTag("nuggets/brass"), net.neoforged.neoforge.common.Tags.Items.NUGGETS);
 
 	public static final ItemEntry<ExperienceNuggetItem> EXP_NUGGET =
 		REGISTRATE.item("experience_nugget", ExperienceNuggetItem::new)
@@ -410,7 +410,7 @@ public class AllItems {
 		REGISTRATE.item("potato_cannon", PotatoCannonItem::new)
 			.properties(p -> p.durability(100))
 			.model(AssetLookup.itemModelWithPartials())
-			.tag(Tags.Items.ENCHANTABLES)
+			.tag(net.neoforged.neoforge.common.Tags.Items.ENCHANTABLES)
 			.register();
 
 	public static final ItemEntry<ExtendoGripItem> EXTENDO_GRIP = REGISTRATE.item("extendo_grip", ExtendoGripItem::new)

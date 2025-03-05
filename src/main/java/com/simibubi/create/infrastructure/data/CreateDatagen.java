@@ -62,13 +62,13 @@ public class CreateDatagen {
 			ProcessingRecipeGen.registerAll(generator, output, lookupProvider);
 		}
 
-		event.getGenerator().addProvider(true, Create.REGISTRATE.setDataProvider(new RegistrateDataProvider(Create.REGISTRATE, Create.ID, event)));
+		event.getGenerator().addProvider(true, Create.registrate().setDataProvider(new RegistrateDataProvider(Create.registrate(), Create.ID, event)));
 	}
 
 	private static void addExtraRegistrateData() {
 		CreateRegistrateTags.addGenerators();
 
-		Create.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+		Create.registrate().addDataGenerator(ProviderType.LANG, provider -> {
 			BiConsumer<String, String> langConsumer = provider::add;
 
 			provideDefaultLang("interface", langConsumer);

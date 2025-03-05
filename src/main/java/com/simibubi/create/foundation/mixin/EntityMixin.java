@@ -8,7 +8,7 @@ import com.simibubi.create.content.equipment.armor.NetheriteDivingHandler;
 
 import net.minecraft.world.entity.Entity;
 
-@Mixin(Entity.class)
+@Mixin(value = Entity.class, priority = 1500)
 public class EntityMixin {
 	@ModifyReturnValue(method = "fireImmune()Z", at = @At("RETURN"))
 	public boolean create$onFireImmune(boolean original) {

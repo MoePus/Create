@@ -16,7 +16,7 @@ apply from: "gradle/property_loader.gradle"
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false')
 ext.buildNumber = System.getenv('BUILD_NUMBER')
-String gitHash = "\"${calculateGitHash() + (hasUnstaged() ? "-modified" : "")}\""
+String gitHash = "${calculateGitHash() + (hasUnstaged() ? "-modified" : "")}"
 
 base {
     archivesName = "create-$minecraft_version"
@@ -139,7 +139,12 @@ dependencies {
     jarJar("net.createmod.ponder:Ponder-NeoForge-${minecraft_version}:${ponder_version}")
 
     compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-${flywheel_minecraft_version}:${flywheel_version}")
-    jarJar(runtimeOnly("dev.engine-room.flywheel:flywheel-neoforge-${flywheel_minecraft_version}:${flywheel_version}"))
+    runtimeOnly(jarJar("dev.engine-room.flywheel:flywheel-neoforge-${flywheel_minecraft_version}:${flywheel_version}") {
+        version {
+            strictly "[1.0,2.0)"
+            prefer flywheel_version
+        }
+    })
     runtimeOnly("dev.engine-room.vanillin:vanillin-neoforge-${flywheel_minecraft_version}:${vanillin_version}")
 
     if (ponderInWorkspace) {
@@ -228,9 +233,10 @@ tasks.named("sourcesJar") {
 
 final slimJar = tasks.register("slimJar", Jar) {
     archiveClassifier = "slim"
-    from sourceSets.main.output
+    from(sourceSets.main.output)
     manifest.attributes([
-        "Git-Hash": gitHash
+        "MixinConfigs": "create.mixins.json",
+        "Git-Hash"    : gitHash
     ])
 }
 

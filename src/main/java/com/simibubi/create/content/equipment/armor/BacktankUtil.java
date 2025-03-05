@@ -12,11 +12,12 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import com.simibubi.create.foundation.utility.DistExecutor;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
+import net.neoforged.api.distmarker.Dist;
+
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -30,8 +31,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
-
-import net.neoforged.api.distmarker.Dist;
 
 public class BacktankUtil {
 
@@ -107,7 +106,7 @@ public class BacktankUtil {
 
 	public static int maxAir(ItemStack backtank) {
 		int enchantLevel = 0;
-		ItemEnchantments enchants = backtank.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+		ItemEnchantments enchants = backtank.getTagEnchantments();
 		for (Entry<Holder<Enchantment>> entry : enchants.entrySet()) {
 			if (entry.getKey().is(AllEnchantments.CAPACITY)) {
 				enchantLevel = entry.getIntValue();

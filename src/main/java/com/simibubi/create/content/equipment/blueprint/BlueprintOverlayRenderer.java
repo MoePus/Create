@@ -24,6 +24,7 @@ import com.simibubi.create.content.logistics.tableCloth.ShoppingListItem.Shoppin
 import com.simibubi.create.content.logistics.tableCloth.TableClothBlockEntity;
 import com.simibubi.create.content.trains.track.TrackPlacement.PlacementInfo;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
+import com.simibubi.create.foundation.item.ItemHelper;
 
 import net.createmod.catnip.animation.AnimationTickHolder;
 import net.createmod.catnip.data.Couple;
@@ -440,13 +441,7 @@ public class BlueprintOverlayRenderer {
 		return cachedRenderedFilters.computeIfAbsent(filter, itemStack -> {
 			if (AllItems.FILTER.isIn(itemStack) && !itemStack.getOrDefault(AllDataComponents.FILTER_ITEMS_BLACKLIST, false)) {
 				ItemStackHandler filterItems = FilterItem.getFilterItems(itemStack);
-				List<ItemStack> list = new ArrayList<>();
-				for (int slot = 0; slot < filterItems.getSlots(); slot++) {
-					ItemStack stackInSlot = filterItems.getStackInSlot(slot);
-					if (!stackInSlot.isEmpty())
-						list.add(stackInSlot);
-				}
-				return list.toArray(ItemStack[]::new);
+				return ItemHelper.getNonEmptyStacks(filterItems).toArray(ItemStack[]::new);
 			}
 
 			if (AllItems.ATTRIBUTE_FILTER.isIn(itemStack)) {

@@ -1,20 +1,20 @@
 package com.simibubi.create;
 
-import static com.simibubi.create.Create.REGISTRATE;
-
-import java.util.Map;
-import java.util.function.Supplier;
-
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayBoardTarget;
 import com.simibubi.create.content.redstone.displayLink.target.LecternDisplayTarget;
 import com.simibubi.create.content.redstone.displayLink.target.NixieTubeDisplayTarget;
 import com.simibubi.create.content.redstone.displayLink.target.SignDisplayTarget;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.tterrag.registrate.util.entry.RegistryEntry;
-
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import java.util.Map;
+import java.util.function.Supplier;
+
 public class AllDisplayTargets {
+	private static final CreateRegistrate REGISTRATE = Create.registrate();
+
 	public static final RegistryEntry<DisplayTarget, SignDisplayTarget> SIGN = REGISTRATE.displayTarget("sign", SignDisplayTarget::new)
 		.associate(BlockEntityType.SIGN)
 		.register();

@@ -104,6 +104,14 @@ public class StockTickerInteractionHandler {
 		if (list == null)
 			return;
 
+		if (!tickerBE.behaviour.freqId.equals(list.shopNetwork())) {
+			AllSoundEvents.DENY.playOnServer(level, player.blockPosition());
+			CreateLang.translate("stock_keeper.wrong_network")
+				.style(ChatFormatting.RED)
+				.sendStatus(player);
+			return;
+		}
+
 		Couple<InventorySummary> bakeEntries = list.bakeEntries(level, null);
 		InventorySummary paymentEntries = bakeEntries.getSecond();
 		InventorySummary orderEntries = bakeEntries.getFirst();

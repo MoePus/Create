@@ -1,6 +1,5 @@
 package com.simibubi.create.foundation.data;
 
-import static com.simibubi.create.Create.REGISTRATE;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.EAST;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.NORTH;
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.SOUTH;
@@ -9,6 +8,7 @@ import static net.minecraft.world.level.block.state.properties.BlockStatePropert
 import java.util.function.Supplier;
 
 import com.simibubi.create.AllTags.AllBlockTags;
+import com.simibubi.create.Create;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.util.DataIngredient;
@@ -124,7 +124,7 @@ public class MetalBarsGen {
 
 	public static BlockEntry<IronBarsBlock> createBars(String name, boolean specialEdge,
 													   Supplier<DataIngredient> ingredient, MapColor color) {
-		return REGISTRATE.block(name + "_bars", IronBarsBlock::new)
+		return Create.registrate().block(name + "_bars", IronBarsBlock::new)
 			.addLayer(() -> RenderType::cutoutMipped)
 			.initialProperties(() -> Blocks.IRON_BARS)
 			.properties(p -> p.sound(SoundType.COPPER)

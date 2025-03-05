@@ -2,7 +2,6 @@ package com.simibubi.create.content.trains.schedule.destination;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.PatternSyntaxException;
 
 import javax.annotation.Nullable;
 
@@ -90,14 +89,13 @@ public class DestinationInstruction extends TextScheduleInstruction {
 			return null;
 		}
 
-		try {
-			for (GlobalStation globalStation : train.graph.getPoints(EdgePointType.STATION)) {
-				if (!globalStation.name.matches(regex))
-					continue;
-				anyMatch = true;
-				validStations.add(globalStation);
-			}
-		} catch (PatternSyntaxException ignored) {}
+
+		for (GlobalStation globalStation : train.graph.getPoints(EdgePointType.STATION)) {
+			if (!globalStation.name.matches(regex))
+				continue;
+			anyMatch = true;
+			validStations.add(globalStation);
+		}
 
 		DiscoveredPath best = train.navigation.findPathTo(validStations, Double.MAX_VALUE);
 		if (best == null) {

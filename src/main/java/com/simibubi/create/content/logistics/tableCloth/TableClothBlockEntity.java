@@ -233,10 +233,13 @@ public class TableClothBlockEntity extends SmartBlockEntity {
 			CreateLang.translate("stock_keeper.limited_stock")
 				.style(ChatFormatting.RED)
 				.sendStatus(player);
-
 		} else {
 			AllSoundEvents.CONFIRM_2.playOnServer(level, worldPosition, 0.5f, 1.0f);
-			list.addPurchases(worldPosition, 1);
+
+			ShoppingList.Mutable mutable = new ShoppingList.Mutable(list);
+			mutable.addPurchases(worldPosition, 1);
+			list = mutable.toImmutable();
+
 			if (!addOntoList)
 				CreateLang.translate("stock_keeper.use_list_to_add_purchases")
 					.color(0xeeeeee)

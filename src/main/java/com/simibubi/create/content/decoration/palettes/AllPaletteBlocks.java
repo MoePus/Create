@@ -1,6 +1,5 @@
 package com.simibubi.create.content.decoration.palettes;
 
-import static com.simibubi.create.Create.REGISTRATE;
 import static com.simibubi.create.foundation.data.WindowGen.customWindowBlock;
 import static com.simibubi.create.foundation.data.WindowGen.customWindowPane;
 import static com.simibubi.create.foundation.data.WindowGen.framedGlass;
@@ -29,9 +28,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
+
 import net.neoforged.neoforge.common.Tags;
 
 public class AllPaletteBlocks {
+	private static final CreateRegistrate REGISTRATE = Create.registrate();
 
 	static {
 		REGISTRATE.setCreativeTab(AllCreativeModeTabs.PALETTES_CREATIVE_TAB);
@@ -42,7 +43,7 @@ public class AllPaletteBlocks {
 	public static final BlockEntry<TransparentBlock> TILED_GLASS = REGISTRATE.block("tiled_glass", TransparentBlock::new)
 		.initialProperties(() -> Blocks.GLASS)
 		.addLayer(() -> RenderType::cutout)
-		.recipe((c, p) -> p.stonecutting(DataIngredient.tag(Tags.Items.GLASS_BLOCKS_COLORLESS), RecipeCategory.BUILDING_BLOCKS, c))
+		.recipe((c, p) -> p.stonecutting(DataIngredient.tag(net.neoforged.neoforge.common.Tags.Items.GLASS_BLOCKS_COLORLESS), RecipeCategory.BUILDING_BLOCKS, c))
 		.blockstate((c, p) -> BlockStateGen.cubeAll(c, p, "palettes/"))
 		.loot((t, g) -> t.dropWhenSilkTouch(g))
 		.tag(Tags.Blocks.GLASS_BLOCKS_COLORLESS, BlockTags.IMPERMEABLE)
@@ -116,6 +117,7 @@ public class AllPaletteBlocks {
 		AllPaletteStoneTypes.register(REGISTRATE);
 	}
 
-	public static void register() {}
+	public static void register() {
+	}
 
 }

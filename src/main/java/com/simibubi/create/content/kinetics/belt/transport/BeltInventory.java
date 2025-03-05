@@ -148,7 +148,8 @@ public class BeltInventory {
 			}
 			float limitedMovement =
 				beltMovementPositive ? Math.min(movement, diffToEnd) : Math.max(movement, diffToEnd);
-			float nextOffset = currentItem.beltPosition + limitedMovement;
+			float extraOffset = BeltHelper.getSegmentBE(belt.getLevel(), belt.getBlockPos().relative(movementFacing.getOpposite())) != null ? .275f : 0;
+			float nextOffset = currentItem.beltPosition + limitedMovement - extraOffset;
 
 			// Belt item processing
 			if (!onClient && horizontal) {
@@ -236,7 +237,7 @@ public class BeltInventory {
 	}
 
 	protected boolean handleBeltProcessingAndCheckIfRemoved(TransportedItemStack currentItem, float nextOffset,
-		boolean noMovement) {
+															boolean noMovement) {
 		int currentSegment = (int) currentItem.beltPosition;
 
 		// Continue processing if held
@@ -450,7 +451,7 @@ public class BeltInventory {
 	}
 
 	public void applyToEachWithin(float position, float maxDistanceToPosition,
-		Function<TransportedItemStack, TransportedResult> processFunction) {
+								  Function<TransportedItemStack, TransportedResult> processFunction) {
 		boolean dirty = false;
 		for (TransportedItemStack transported : items) {
 			if (toRemove.contains(transported))

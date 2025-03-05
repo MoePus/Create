@@ -4,7 +4,12 @@ import java.util.List;
 
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -19,11 +24,8 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
-
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 
 @EventBusSubscriber
 public class DivingHelmetItem extends BaseArmorItem {
@@ -43,10 +45,16 @@ public class DivingHelmetItem extends BaseArmorItem {
 
 	@Override
 	public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-		if (enchantment.is(Enchantments.AQUA_AFFINITY)) {
+		if (enchantment.is(Enchantments.AQUA_AFFINITY))
 			return 1;
-		}
 		return super.getEnchantmentLevel(stack, enchantment);
+	}
+
+	@Override
+	public ItemEnchantments getAllEnchantments(ItemStack stack, RegistryLookup<Enchantment> lookup) {
+		ItemEnchantments.Mutable enchants = new ItemEnchantments.Mutable(super.getAllEnchantments(stack, lookup));
+		enchants.set(lookup.getOrThrow(Enchantments.AQUA_AFFINITY), 1);
+		return enchants.toImmutable();
 	}
 
 	public static boolean isWornBy(Entity entity) {

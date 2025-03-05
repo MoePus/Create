@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import com.google.common.collect.HashMultimap;
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.AllTags.AllItemTags;
@@ -19,9 +20,17 @@ import com.simibubi.create.content.trains.track.ITrackBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.utility.BlockHelper;
 
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.extensions.IBaseRailBlockExtension;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+
 import net.createmod.catnip.levelWrappers.WrappedLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -33,9 +42,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -64,13 +73,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-
-import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.extensions.IBaseRailBlockExtension;
-import net.neoforged.neoforge.common.util.TriState;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 
 public class DeployerHandler {
 
@@ -125,27 +127,21 @@ public class DeployerHandler {
 	}
 
 	static void activate(DeployerFakePlayer player, Vec3 vec, BlockPos clickedPos, Vec3 extensionVector, Mode mode) {
-		applyAttributes(player, false);
-		activateInner(player, vec, clickedPos, extensionVector, mode);
-		applyAttributes(player, true);
-	}
+		HashMultimap<Holder<Attribute>, AttributeModifier> attributeModifiers = HashMultimap.create();
+		player.getMainHandItem()
+			.getAttributeModifiers()
+			.modifiers()
+			.forEach(e -> attributeModifiers.put(e.attribute(), e.modifier()));
 
-	private static void applyAttributes(Player player, boolean remove) {
-		player.getMainHandItem().getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attributeHolder, attributeModifier) -> {
-			AttributeInstance instance = player.getAttributes().getInstance(attributeHolder);
-			if (instance != null) {
-				if (remove) {
-					instance.removeModifier(attributeModifier);
-				} else {
-					instance.addTransientModifier(attributeModifier);
-				}
-			}
-		});
+		player.getAttributes()
+			.addTransientAttributeModifiers(attributeModifiers);
+		activateInner(player, vec, clickedPos, extensionVector, mode);
+		player.getAttributes()
+			.removeAttributeModifiers(attributeModifiers);
 	}
 
 	private static void activateInner(DeployerFakePlayer player, Vec3 vec, BlockPos clickedPos, Vec3 extensionVector,
 									  Mode mode) {
-
 		Vec3 rayOrigin = vec.add(extensionVector.scale(3 / 2f + 1 / 64f));
 		Vec3 rayTarget = vec.add(extensionVector.scale(5 / 2f - 1 / 64f));
 		player.setPos(rayOrigin.x, rayOrigin.y, rayOrigin.z);

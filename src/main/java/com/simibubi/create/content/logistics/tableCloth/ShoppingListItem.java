@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.jetbrains.annotations.Unmodifiable;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.simibubi.create.AllDataComponents;
@@ -35,7 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 
 public class ShoppingListItem extends Item {
-	public record ShoppingList(List<IntAttached<BlockPos>> purchases, UUID shopOwner, UUID shopNetwork) {
+	public record ShoppingList(@Unmodifiable List<IntAttached<BlockPos>> purchases, UUID shopOwner, UUID shopNetwork) {
 		public static final Codec<ShoppingList> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.list(IntAttached.codec(BlockPos.CODEC)).fieldOf("purchases").forGetter(ShoppingList::purchases),
 			UUIDUtil.CODEC.fieldOf("shop_owner").forGetter(ShoppingList::shopOwner),
@@ -48,22 +50,11 @@ public class ShoppingListItem extends Item {
 		    UUIDUtil.STREAM_CODEC, ShoppingList::shopNetwork,
 		    ShoppingList::new
 		);
-		
+
 		public ShoppingList duplicate() {
 			return new ShoppingList(new ArrayList<>(purchases.stream()
 				.map(ia -> IntAttached.with(ia.getFirst(), ia.getSecond()))
 				.toList()), shopOwner, shopNetwork);
-		}
-		
-		// Y value of clothPos is pixel perfect (x16)
-		public void addPurchases(BlockPos clothPos, int amount) {
-			for (IntAttached<BlockPos> entry : purchases) {
-				if (clothPos.equals(entry.getValue())) {
-					entry.setFirst(entry.getFirst() + amount);
-					return;
-				}
-			}
-			purchases.add(IntAttached.with(amount, clothPos));
 		}
 
 		public int getPurchases(BlockPos clothPos) {
@@ -88,6 +79,33 @@ public class ShoppingListItem extends Item {
 			}
 
 			return Couple.create(output, input);
+		}
+
+		public static class Mutable {
+			private final List<IntAttached<BlockPos>> purchases = new ArrayList<>();
+			private final UUID shopOwner;
+			private final UUID shopNetwork;
+
+			public Mutable(ShoppingList list) {
+				this.purchases.addAll(list.purchases);
+				this.shopOwner = list.shopOwner;
+				this.shopNetwork = list.shopNetwork;
+			}
+
+			// Y value of clothPos is pixel perfect (x16)
+			public void addPurchases(BlockPos clothPos, int amount) {
+				for (IntAttached<BlockPos> entry : purchases) {
+					if (clothPos.equals(entry.getValue())) {
+						entry.setFirst(entry.getFirst() + amount);
+						return;
+					}
+				}
+				purchases.add(IntAttached.with(amount, clothPos));
+			}
+
+			public ShoppingList toImmutable() {
+				return new ShoppingList(purchases, shopOwner, shopNetwork);
+			}
 		}
 	}
 

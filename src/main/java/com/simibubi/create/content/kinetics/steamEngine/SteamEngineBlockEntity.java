@@ -21,7 +21,6 @@ import com.simibubi.create.foundation.utility.CreateLang;
 import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.math.VecHelper;
 import net.createmod.catnip.math.AngleHelper;
-import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -43,6 +42,8 @@ public class SteamEngineBlockEntity extends SmartBlockEntity implements IHaveGog
 
 	public WeakReference<PoweredShaftBlockEntity> target;
 	public WeakReference<FluidTankBlockEntity> source;
+
+	float prevAngle = 0;
 
 	public SteamEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -73,7 +74,7 @@ public class SteamEngineBlockEntity extends SmartBlockEntity implements IHaveGog
 		FluidTankBlockEntity tank = getTank();
 		PoweredShaftBlockEntity shaft = getShaft();
 
-		if (tank == null || shaft == null) {
+		if (tank == null || shaft == null || !isValid()) {
 			if (level.isClientSide())
 				return;
 			if (shaft == null)
@@ -174,7 +175,17 @@ public class SteamEngineBlockEntity extends SmartBlockEntity implements IHaveGog
 		return tank.getControllerBE();
 	}
 
-	float prevAngle = 0;
+	public boolean isValid() {
+		BlockPos tankPos = getTank().getBlockPos();
+
+		Direction direction = switch (getBlockState().getValue(SteamEngineBlock.FACE)) {
+			case FLOOR -> Direction.DOWN;
+			case WALL -> getBlockState().getValue(SteamEngineBlock.FACING);
+			case CEILING -> Direction.UP;
+		};
+
+		return getBlockPos().relative(direction).equals(tankPos);
+	}
 
 	@OnlyIn(Dist.CLIENT)
 	private void spawnParticles() {

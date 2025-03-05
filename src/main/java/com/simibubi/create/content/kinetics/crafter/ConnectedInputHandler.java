@@ -3,19 +3,18 @@ package com.simibubi.create.content.kinetics.crafter;
 import static com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.crafter.MechanicalCrafterBlockEntity.Inventory;
 
 import net.createmod.catnip.data.Iterate;
 import net.createmod.catnip.nbt.NBTHelper;
@@ -25,7 +24,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,7 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 
 public class ConnectedInputHandler {
@@ -178,12 +175,17 @@ public class ConnectedInputHandler {
 		}
 
 		public IItemHandler getItemHandler(Level world, BlockPos pos) {
+			List<Inventory> inventories = this.getInventories(world, pos);
+			return new CombinedInvWrapper(inventories.toArray(IItemHandlerModifiable[]::new));
+		}
+
+		public List<Inventory> getInventories(Level world, BlockPos pos) {
 			if (!isController) {
 				BlockPos controllerPos = pos.offset(data.get(0));
 				ConnectedInput input = CrafterHelper.getInput(world, controllerPos);
 				if (input == this || input == null || !input.isController)
-					return new ItemStackHandler();
-				return input.getItemHandler(world, controllerPos);
+					return List.of();
+				return input.getInventories(world, controllerPos);
 			}
 
 			Direction facing = Direction.SOUTH;
@@ -202,13 +204,12 @@ public class ConnectedInputHandler {
 				return compareY != 0 ? compareY : modifier * Integer.compare(c1, c2);
 			};
 
-			List<IItemHandlerModifiable> list = data.stream()
+			return data.stream()
 				.sorted(invOrdering)
 				.map(l -> CrafterHelper.getCrafter(world, pos.offset(l)))
 				.filter(Objects::nonNull)
-				.map(crafter -> crafter.getInventory())
+				.map(MechanicalCrafterBlockEntity::getInventory)
 				.collect(Collectors.toList());
-			return new CombinedInvWrapper(Arrays.copyOf(list.toArray(), list.size(), IItemHandlerModifiable[].class));
 		}
 
 		public void write(CompoundTag nbt) {
