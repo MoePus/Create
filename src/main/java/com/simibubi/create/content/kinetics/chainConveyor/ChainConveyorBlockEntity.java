@@ -88,7 +88,7 @@ public class ChainConveyorBlockEntity extends KineticBlockEntity implements Tran
 
 	@Override
 	protected AABB createRenderBoundingBox() {
-		return AABB.INFINITE;
+		return connections.isEmpty() ? new AABB(worldPosition).inflate(3) : AABB.INFINITE;
 	}
 
 	@Override
