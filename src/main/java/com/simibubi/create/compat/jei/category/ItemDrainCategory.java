@@ -10,7 +10,6 @@ import com.simibubi.create.content.fluids.potion.PotionFluidHandler;
 import com.simibubi.create.content.fluids.transfer.EmptyingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
-
 import com.simibubi.create.foundation.item.ItemHelper;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
@@ -28,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackLinkedSet;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -98,11 +98,9 @@ public class ItemDrainCategory extends CreateRecipeCategory<EmptyingRecipe> {
 				.addSlot(RecipeIngredientRole.INPUT, 27, 8)
 				.setBackground(getRenderedSlot(), -1, -1)
 				.addIngredients(recipe.getIngredients().get(0));
-		builder
-				.addSlot(RecipeIngredientRole.OUTPUT, 132, 8)
-				.setBackground(getRenderedSlot(), -1, -1)
-				.addIngredient(NeoForgeTypes.FLUID_STACK, withImprovedVisibility(recipe.getResultingFluid()))
-				.addRichTooltipCallback(addFluidTooltip(recipe.getResultingFluid().getAmount()));
+
+		addFluidSlot(builder, 132, 8, recipe.getResultingFluid());
+
 		builder
 				.addSlot(RecipeIngredientRole.OUTPUT, 132, 27)
 				.setBackground(getRenderedSlot(), -1, -1)

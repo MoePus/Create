@@ -48,6 +48,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -164,7 +165,7 @@ public enum AllRecipeTypes implements IRecipeTypeInfo, StringRepresentable {
 
 	public <T extends ProcessingRecipe<?>> MapCodec<T> processingCodec() {
 		if (!isProcessingRecipe)
-			throw new AssertionError("AllRecipeTypes#processingCodec called on "+name()+", which is not a processing recipe");
+			throw new AssertionError("AllRecipeTypes#processingCodec called on " + name() + ", which is not a processing recipe");
 		if (this == DEPLOYING || this == ITEM_APPLICATION)
 			return ItemApplicationRecipe.codec(this);
 		return ProcessingRecipeSerializer.codec(this);

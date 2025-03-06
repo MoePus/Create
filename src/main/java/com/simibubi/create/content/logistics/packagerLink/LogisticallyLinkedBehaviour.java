@@ -11,12 +11,11 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import net.neoforged.neoforge.items.ItemStackHandler;
-
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import com.google.common.cache.Cache;
 import com.simibubi.create.Create;
+import com.simibubi.create.content.logistics.packager.IdentifiedInventory;
 import com.simibubi.create.content.logistics.packager.InventorySummary;
 import com.simibubi.create.content.logistics.packager.PackagerBlockEntity;
 import com.simibubi.create.content.logistics.packager.PackagingRequest;
@@ -34,7 +33,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 
@@ -174,7 +173,7 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 
 	public Pair<PackagerBlockEntity, PackagingRequest> processRequest(ItemStack stack, int amount, String address,
 		int linkIndex, MutableBoolean finalLink, int orderId, @Nullable PackageOrder orderContext,
-		@Nullable IItemHandler ignoredHandler) {
+		@Nullable IdentifiedInventory ignoredHandler) {
 
 		if (blockEntity instanceof PackagerLinkBlockEntity plbe)
 			return plbe.processRequest(stack, amount, address, linkIndex, finalLink, orderId, orderContext,
@@ -183,7 +182,7 @@ public class LogisticallyLinkedBehaviour extends BlockEntityBehaviour {
 		return null;
 	}
 
-	public InventorySummary getSummary(@Nullable IItemHandler ignoredHandler) {
+	public InventorySummary getSummary(@Nullable IdentifiedInventory ignoredHandler) {
 		if (blockEntity instanceof PackagerLinkBlockEntity plbe)
 			return plbe.fetchSummaryFromPackager(ignoredHandler);
 		return InventorySummary.EMPTY;

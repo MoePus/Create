@@ -47,9 +47,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
 import com.simibubi.create.foundation.utility.CreateLang;
-
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.createmod.catnip.animation.LerpedFloat;
 import net.createmod.catnip.animation.LerpedFloat.Chaser;
@@ -81,6 +79,8 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuProvider {
 
@@ -88,7 +88,6 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 	public static final BehaviourType<FactoryPanelBehaviour> TOP_RIGHT = new BehaviourType<>();
 	public static final BehaviourType<FactoryPanelBehaviour> BOTTOM_LEFT = new BehaviourType<>();
 	public static final BehaviourType<FactoryPanelBehaviour> BOTTOM_RIGHT = new BehaviourType<>();
-	public static final int REQUEST_INTERVAL = 100;
 
 	public Map<FactoryPanelPosition, FactoryPanelConnection> targetedBy;
 	public Map<BlockPos, FactoryPanelConnection> targetedByLinks;
@@ -390,7 +389,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		if (satisfied || promisedSatisfied || waitingForNetwork || redstonePowered)
 			return;
 		if (timer > 0) {
-			timer = Math.min(timer, REQUEST_INTERVAL);
+			timer = Math.min(timer, getConfigRequestIntervalInTicks());
 			timer--;
 			return;
 		}
@@ -480,7 +479,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		if (packager == null || !packager.targetInventory.hasInventory())
 			return;
 
-		int availableOnNetwork = LogisticsManager.getStockOf(network, item, packager.targetInventory.getInventory());
+		int availableOnNetwork = LogisticsManager.getStockOf(network, item, packager.targetInventory.getIdentifiedInventory());
 		if (availableOnNetwork == 0) {
 			sendEffect(getPanelPosition(), false);
 			return;
@@ -498,7 +497,7 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		sendEffect(getPanelPosition(), true);
 
 		if (!LogisticsManager.broadcastPackageRequest(network, RequestType.RESTOCK, order,
-			packager.targetInventory.getInventory(), recipeAddress, null))
+			packager.targetInventory.getIdentifiedInventory(), recipeAddress, null))
 			return;
 
 		restockerPromises.add(new RequestPromise(orderedItem));
@@ -747,11 +746,15 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 	}
 
 	public void resetTimer() {
-		timer = REQUEST_INTERVAL;
+		timer = getConfigRequestIntervalInTicks();
 	}
 
 	public void resetTimerSlightly() {
-		timer = REQUEST_INTERVAL / 2;
+		timer = getConfigRequestIntervalInTicks() / 2;
+	}
+
+	private int getConfigRequestIntervalInTicks() {
+		return AllConfigs.server().logistics.factoryGaugeTimer.get();
 	}
 
 	private int getPromiseExpiryTimeInTicks() {

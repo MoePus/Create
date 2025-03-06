@@ -27,6 +27,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -176,15 +177,13 @@ public class SteamEngineBlockEntity extends SmartBlockEntity implements IHaveGog
 	}
 
 	public boolean isValid() {
-		BlockPos tankPos = getTank().getBlockPos();
+		Direction dir = SteamEngineBlock.getConnectedDirection(getBlockState()).getOpposite();
 
-		Direction direction = switch (getBlockState().getValue(SteamEngineBlock.FACE)) {
-			case FLOOR -> Direction.DOWN;
-			case WALL -> getBlockState().getValue(SteamEngineBlock.FACING);
-			case CEILING -> Direction.UP;
-		};
+		Level level = getLevel();
+		if (level == null)
+			return false;
 
-		return getBlockPos().relative(direction).equals(tankPos);
+		return level.getBlockState(getBlockPos().relative(dir)).is(AllBlocks.FLUID_TANK.get());
 	}
 
 	@OnlyIn(Dist.CLIENT)

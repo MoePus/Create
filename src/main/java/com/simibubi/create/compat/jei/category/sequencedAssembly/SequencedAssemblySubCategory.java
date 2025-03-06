@@ -72,11 +72,7 @@ public abstract class SequencedAssemblySubCategory {
 					.getFluidIngredients()
 					.get(0);
 
-			builder
-					.addSlot(RecipeIngredientRole.INPUT, x + 4, 15)
-					.setBackground(CreateRecipeCategory.getRenderedSlot(), -1, -1)
-					.addIngredients(NeoForgeTypes.FLUID_STACK, CreateRecipeCategory.withImprovedVisibility(fluidIngredient.getMatchingFluidStacks()))
-					.addRichTooltipCallback(CreateRecipeCategory.addFluidTooltip(fluidIngredient.getRequiredAmount()));
+			CreateRecipeCategory.addFluidSlot(builder, x + 4, 15, fluidIngredient);
 		}
 
 		@Override

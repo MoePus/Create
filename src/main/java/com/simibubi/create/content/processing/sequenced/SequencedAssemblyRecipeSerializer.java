@@ -18,25 +18,25 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<SequencedAssemblyRecipe> {
 
 	private final MapCodec<SequencedAssemblyRecipe> CODEC = RecordCodecBuilder.mapCodec(
-			i -> i.group(
-					Ingredient.CODEC.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
-				ProcessingOutput.CODEC.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
-					SequencedRecipe.CODEC.listOf().fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
-					ProcessingOutput.CODEC.listOf().fieldOf("results").forGetter(r -> r.resultPool),
-					ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops").forGetter(r -> Optional.of(r.getLoops()))
-			).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
-				SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
-				recipe.ingredient = ingredient;
-				recipe.transitionalItem = transitionalItem;
-				recipe.sequence.addAll(sequence);
-				recipe.resultPool.addAll(results);
-				recipe.loops = loops.orElse(5);
+		i -> i.group(
+			Ingredient.CODEC.fieldOf("ingredient").forGetter(SequencedAssemblyRecipe::getIngredient),
+			ProcessingOutput.CODEC.fieldOf("transitional_item").forGetter(r -> r.transitionalItem),
+			SequencedRecipe.CODEC.listOf().fieldOf("sequence").forGetter(SequencedAssemblyRecipe::getSequence),
+			ProcessingOutput.CODEC.listOf().fieldOf("results").forGetter(r -> r.resultPool),
+			ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("loops").forGetter(r -> Optional.of(r.getLoops()))
+		).apply(i, (ingredient, transitionalItem, sequence, results, loops) -> {
+			SequencedAssemblyRecipe recipe = new SequencedAssemblyRecipe(this);
+			recipe.ingredient = ingredient;
+			recipe.transitionalItem = transitionalItem;
+			recipe.sequence.addAll(sequence);
+			recipe.resultPool.addAll(results);
+			recipe.loops = loops.orElse(5);
 
-				for (int j = 0; j < recipe.sequence.size(); j++)
-					sequence.get(j).initFromSequencedAssembly(recipe, j == 0);
+			for (int j = 0; j < recipe.sequence.size(); j++)
+				sequence.get(j).initFromSequencedAssembly(recipe, j == 0);
 
-				return recipe;
-			})
+			return recipe;
+		})
 	);
 
 	public final StreamCodec<RegistryFriendlyByteBuf, SequencedAssemblyRecipe> STREAM_CODEC = StreamCodec.of(

@@ -2,11 +2,11 @@ package com.simibubi.create.compat.trainmap;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.trains.entity.Carriage;
 import com.simibubi.create.content.trains.entity.Carriage.DimensionalCarriageEntity;
@@ -23,8 +23,8 @@ import com.simibubi.create.foundation.utility.TickBasedCache;
 import io.netty.buffer.ByteBuf;
 import net.createmod.catnip.codecs.stream.CatnipLargerStreamCodecs;
 import net.createmod.catnip.codecs.stream.CatnipStreamCodecBuilders;
-import net.createmod.catnip.platform.CatnipServices;
 import net.createmod.catnip.data.Pair;
+import net.createmod.catnip.platform.CatnipServices;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,7 +36,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public class TrainMapSync {
@@ -61,7 +60,7 @@ public class TrainMapSync {
 	public static class TrainMapSyncEntry {
 		public static final StreamCodec<FriendlyByteBuf, TrainMapSyncEntry> STREAM_CODEC = CatnipLargerStreamCodecs.composite(
 				CatnipStreamCodecBuilders.array(ByteBufCodecs.FLOAT, Float.class), packet -> packet.positions,
-				CatnipStreamCodecBuilders.list(ResourceKey.streamCodec(Registries.DIMENSION)), packet -> packet.dimensions,
+				CatnipStreamCodecBuilders.list(CatnipStreamCodecBuilders.nullable(ResourceKey.streamCodec(Registries.DIMENSION))), packet -> packet.dimensions,
 				TrainState.STREAM_CODEC, packet -> packet.state,
 				SignalState.STREAM_CODEC, packet -> packet.signalState,
 				ByteBufCodecs.BOOL, packet -> packet.fueled,
@@ -188,6 +187,8 @@ public class TrainMapSync {
 
 		entry.positions = new Float[train.carriages.size() * 6];
 		entry.dimensions = new ArrayList<>();
+		
+		Arrays.fill(entry.positions, Float.valueOf(0));
 
 		List<Carriage> carriages = train.carriages;
 		for (int i = 0; i < carriages.size(); i++) {

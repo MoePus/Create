@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:mod_loaded",
-      "modid": "ars_nouveau"
+      "modid": "regions_unexplored"
     }
   ],
   "type": "create:cutting",
@@ -11,7 +11,7 @@
       "type": "neoforge:compound",
       "ingredients": [
         {
-          "item": "ars_nouveau:blue_archwood_log"
+          "item": "regions_unexplored:ashen_wood"
         }
       ]
     }
@@ -19,7 +19,7 @@
   "processing_time": 50,
   "results": [
     {
-      "item": "ars_nouveau:stripped_blue_archwood_log"
+      "item": "regions_unexplored:stripped_dead_wood"
     }
   ]
 }

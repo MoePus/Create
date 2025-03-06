@@ -2,6 +2,7 @@ package com.simibubi.create.content.processing.sequenced;
 
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
@@ -17,16 +18,17 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 
 public class SequencedRecipe<T extends ProcessingRecipe<?>> {
-
 	public static final Codec<SequencedRecipe<?>> CODEC = AllRecipeTypes.CODEC
-			.<ProcessingRecipe<?>>dispatch(ProcessingRecipe::getRecipeType, AllRecipeTypes::processingCodec)
-			.xmap(SequencedRecipe::new, SequencedRecipe::getRecipe);
+		.<ProcessingRecipe<?>>dispatch(ProcessingRecipe::getRecipeType, AllRecipeTypes::processingCodec)
+		.validate(r -> r instanceof IAssemblyRecipe ? DataResult.success(r) :
+			DataResult.error(() -> r.getType() + " is not a supported recipe type"))
+		.xmap(SequencedRecipe::new, SequencedRecipe::getRecipe);
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, SequencedRecipe<?>> STREAM_CODEC = StreamCodec.of(
 			(b, v) -> v.writeToBuffer(b), SequencedRecipe::readFromBuffer
 	);
 
-	private T wrapped;
+	private final T wrapped;
 
 	public SequencedRecipe(T wrapped) {
 		this.wrapped = wrapped;

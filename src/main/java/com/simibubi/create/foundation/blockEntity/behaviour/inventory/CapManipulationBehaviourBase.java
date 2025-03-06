@@ -48,8 +48,7 @@ public abstract class CapManipulationBehaviourBase<T, S extends CapManipulationB
 
 	@Override
 	public void onNeighborChanged(BlockPos neighborPos) {
-		BlockFace targetBlockFace = target.getTarget(getWorld(), blockEntity.getBlockPos(), blockEntity.getBlockState());
-		if (targetBlockFace.getConnectedPos().equals(neighborPos))
+		if (this.getTarget().getConnectedPos().equals(neighborPos))
 			onHandlerInvalidated();
 	}
 
@@ -83,10 +82,17 @@ public abstract class CapManipulationBehaviourBase<T, S extends CapManipulationB
 		return targetCapability;
 	}
 
+	/**
+	 * Get the target of this is behavior, which is the face of the owner BlockEntity that acts as the interface.
+	 * To get the BlockFace to use for capability lookup, call getOpposite on the result.
+	 */
+	public BlockFace getTarget() {
+		return this.target.getTarget(this.getWorld(), this.blockEntity.getBlockPos(), this.blockEntity.getBlockState());
+	}
+	
 	protected boolean onHandlerInvalidated() {
 		if (targetCapability == null)
 			return false;
-
 		findNewNextTick = true;
 		targetCapability = null;
 
@@ -127,8 +133,7 @@ public abstract class CapManipulationBehaviourBase<T, S extends CapManipulationB
 
 	public void findNewCapability() {
 		Level world = getWorld();
-		BlockFace targetBlockFace = target.getTarget(world, blockEntity.getBlockPos(), blockEntity.getBlockState())
-			.getOpposite();
+		BlockFace targetBlockFace = this.getTarget().getOpposite();
 		BlockPos pos = targetBlockFace.getPos();
 
 		targetCapability = null;

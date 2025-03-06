@@ -2,7 +2,11 @@ package com.simibubi.create.foundation.blockEntity.behaviour.inventory;
 
 import java.util.function.Predicate;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.base.Predicates;
+import com.simibubi.create.api.packager.InventoryIdentifier;
+import com.simibubi.create.content.logistics.packager.IdentifiedInventory;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BehaviourType;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
@@ -41,6 +45,16 @@ public class InvManipulationBehaviour extends CapManipulationBehaviourBase<IItem
 		InterfaceProvider target) {
 		super(be, target);
 		behaviourType = type;
+	}
+
+	@Nullable
+	public IdentifiedInventory getIdentifiedInventory() {
+		IItemHandler inventory = this.getInventory();
+		if (inventory == null)
+			return null;
+
+		InventoryIdentifier identifier = InventoryIdentifier.get(this.getWorld(), this.getTarget().getOpposite());
+		return new IdentifiedInventory(identifier, inventory);
 	}
 
 	@Override

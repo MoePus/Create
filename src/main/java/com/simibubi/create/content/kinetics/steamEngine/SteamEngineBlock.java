@@ -101,7 +101,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 
 	@Override
 	public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor world,
-		BlockPos pos, BlockPos neighbourPos) {
+								  BlockPos pos, BlockPos neighbourPos) {
 		if (state.getValue(WATERLOGGED))
 			world.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
 		return state;
@@ -133,7 +133,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 		Direction direction = pState.getValue(FACING);
 		return face == AttachFace.CEILING ? AllShapes.STEAM_ENGINE_CEILING.get(direction.getAxis())
 			: face == AttachFace.FLOOR ? AllShapes.STEAM_ENGINE.get(direction.getAxis())
-				: AllShapes.STEAM_ENGINE_WALL.get(direction);
+			: AllShapes.STEAM_ENGINE_WALL.get(direction);
 	}
 
 	@Override
@@ -189,7 +189,7 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 
 		@Override
 		public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
-			BlockHitResult ray) {
+										 BlockHitResult ray) {
 			BlockPos shaftPos = SteamEngineBlock.getShaftPos(state, pos);
 			BlockState shaft = AllBlocks.SHAFT.getDefaultState();
 			for (Direction direction : Direction.orderedByNearest(player)) {
@@ -213,6 +213,10 @@ public class SteamEngineBlock extends FaceAttachedHorizontalDirectionalBlock
 
 	public static Couple<Integer> getSpeedRange() {
 		return Couple.create(16, 64);
+	}
+
+	public static Direction getConnectedDirection(BlockState state) {
+		return FaceAttachedHorizontalDirectionalBlock.getConnectedDirection(state);
 	}
 
 	@Override
