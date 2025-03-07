@@ -15,22 +15,20 @@
   "results": [
     {
       "count": 2,
-      "item": "byg:lignite"
+      "id": "byg:lignite"
     },
     {
       "chance": 0.5,
       "count": 2,
-      "item": "byg:lignite"
+      "id": "byg:lignite"
     },
     {
       "chance": 0.75,
-      "item": {
-        "id": "create:experience_nugget"
-      }
+      "id": "create:experience_nugget"
     },
     {
       "chance": 0.125,
-      "item": "byg:cobbled_ether_stone"
+      "id": "byg:cobbled_ether_stone"
     }
   ]
 }

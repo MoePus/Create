@@ -20,17 +20,15 @@
   "results": [
     {
       "count": 2,
-      "item": "druidcraft:amber"
+      "id": "druidcraft:amber"
     },
     {
       "chance": 0.5,
-      "item": "druidcraft:amber"
+      "id": "druidcraft:amber"
     },
     {
       "chance": 0.125,
-      "item": {
-        "id": "minecraft:cobblestone"
-      }
+      "id": "minecraft:cobblestone"
     }
   ]
 }

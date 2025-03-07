@@ -49,7 +49,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.getIngredient());
 		SequencedRecipe.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, recipe.getSequence());
 		ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, recipe.resultPool);
-		recipe.transitionalItem.write(buffer);
+		ProcessingOutput.STREAM_CODEC.encode(buffer, recipe.transitionalItem);
 		buffer.writeInt(recipe.loops);
 	}
 
@@ -58,7 +58,7 @@ public class SequencedAssemblyRecipeSerializer implements RecipeSerializer<Seque
 		recipe.ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
 		recipe.getSequence().addAll(SequencedRecipe.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer));
 		recipe.resultPool.addAll(ProcessingOutput.STREAM_CODEC.apply(ByteBufCodecs.list()).decode(buffer));
-		recipe.transitionalItem = ProcessingOutput.read(buffer);
+		recipe.transitionalItem = ProcessingOutput.STREAM_CODEC.decode(buffer);
 		recipe.loops = buffer.readInt();
 		return recipe;
 	}

@@ -48,7 +48,7 @@ public class ProcessingRecipeSerializer<T extends ProcessingRecipe<?>> implement
 					i.getFluidIngredients().forEach(o -> list.add(Either.right(o)));
 					return list;
 				}),
-				Codec.either(ProcessingOutput.CODEC, FluidStack.CODEC).listOf().fieldOf("results").forGetter(i -> {
+			Codec.either(ProcessingOutput.CODEC, FluidStack.CODEC).listOf().fieldOf("results").forGetter(i -> {
 					List<Either<ProcessingOutput, FluidStack>> list = new ArrayList<>();
 					i.getRollableResults().forEach(o -> list.add(Either.left(o)));
 					i.getFluidResults().forEach(o -> list.add(Either.right(o)));

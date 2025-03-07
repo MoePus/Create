@@ -20,7 +20,7 @@
   "results": [
     {
       "chance": 0.25,
-      "item": "byg:white_puffball_spores"
+      "id": "byg:white_puffball_spores"
     }
   ]
 }

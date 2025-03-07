@@ -20,18 +20,16 @@
   "results": [
     {
       "count": 8,
-      "item": "druidcraft:fiery_glass"
+      "id": "druidcraft:fiery_glass"
     },
     {
       "chance": 0.25,
       "count": 6,
-      "item": "druidcraft:fiery_glass"
+      "id": "druidcraft:fiery_glass"
     },
     {
       "chance": 0.125,
-      "item": {
-        "id": "minecraft:cobblestone"
-      }
+      "id": "minecraft:cobblestone"
     }
   ]
 }

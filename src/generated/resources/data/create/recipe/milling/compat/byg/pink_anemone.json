@@ -20,16 +20,12 @@
   "results": [
     {
       "count": 2,
-      "item": {
-        "id": "minecraft:pink_dye"
-      }
+      "id": "minecraft:pink_dye"
     },
     {
       "chance": 0.1,
       "count": 2,
-      "item": {
-        "id": "minecraft:purple_dye"
-      }
+      "id": "minecraft:purple_dye"
     }
   ]
 }

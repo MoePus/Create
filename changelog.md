@@ -37,6 +37,8 @@ Create 6.0.2
 - Fixed belts moving a sneaking player even when not wearing the full cardboard set #7691
 - Packagers can now read multiple lines on signs for package addressing
 - Factory Gauge request interval is now configurable
+- Fixed train map integration crashing when there are derailed trains or trains in another dimension (1.21.1)
+- Fixed cardboard armor rendering not respecting custom player scaling
 
 #### API Changes
 

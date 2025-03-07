@@ -6,9 +6,7 @@
   "loops": 1,
   "results": [
     {
-      "item": {
-        "id": "create:track"
-      }
+      "id": "create:track"
     }
   ],
   "sequence": [
@@ -29,9 +27,7 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_track"
-          }
+          "id": "create:incomplete_track"
         }
       ]
     },
@@ -52,9 +48,7 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_track"
-          }
+          "id": "create:incomplete_track"
         }
       ]
     },
@@ -67,16 +61,12 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_track"
-          }
+          "id": "create:incomplete_track"
         }
       ]
     }
   ],
   "transitional_item": {
-    "item": {
-      "id": "create:incomplete_track"
-    }
+    "id": "create:incomplete_track"
   }
 }

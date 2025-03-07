@@ -91,8 +91,8 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity imple
 		redstonePowered = tag.getBoolean("Powered");
 		lastRequestSucceeded = tag.getBoolean("Success");
 		allowPartialRequests = tag.getBoolean("AllowPartial");
-		encodedRequest = CatnipCodecUtils.decode(PackageOrder.CODEC, tag.getCompound("EncodedRequest")).orElse(PackageOrder.empty());
-		encodedRequestContext = CatnipCodecUtils.decode(PackageOrder.CODEC, tag.getCompound("EncodedRequestContext")).orElse(PackageOrder.empty());
+		encodedRequest = CatnipCodecUtils.decode(PackageOrder.CODEC, registries, tag.getCompound("EncodedRequest")).orElse(PackageOrder.empty());
+		encodedRequestContext = CatnipCodecUtils.decode(PackageOrder.CODEC, registries, tag.getCompound("EncodedRequestContext")).orElse(PackageOrder.empty());
 		encodedTargetAdress = tag.getString("EncodedAddress");
 	}
 
@@ -101,8 +101,8 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity imple
 		super.writeSafe(tag, registries);
 		tag.putBoolean("AllowPartial", allowPartialRequests);
 		tag.putString("EncodedAddress", encodedTargetAdress);
-		tag.put("EncodedRequest", CatnipCodecUtils.encode(PackageOrder.CODEC, encodedRequest).orElseThrow());
-		tag.put("EncodedRequestContext", CatnipCodecUtils.encode(PackageOrder.CODEC, encodedRequestContext).orElseThrow());
+		tag.put("EncodedRequest", CatnipCodecUtils.encode(PackageOrder.CODEC, registries, encodedRequest).orElseThrow());
+		tag.put("EncodedRequestContext", CatnipCodecUtils.encode(PackageOrder.CODEC, registries, encodedRequestContext).orElseThrow());
 	}
 
 	@Override
@@ -112,8 +112,8 @@ public class RedstoneRequesterBlockEntity extends StockCheckingBlockEntity imple
 		tag.putBoolean("Success", lastRequestSucceeded);
 		tag.putBoolean("AllowPartial", allowPartialRequests);
 		tag.putString("EncodedAddress", encodedTargetAdress);
-		tag.put("EncodedRequest", CatnipCodecUtils.encode(PackageOrder.CODEC, encodedRequest).orElseThrow());
-		tag.put("EncodedRequestContext", CatnipCodecUtils.encode(PackageOrder.CODEC, encodedRequestContext).orElseThrow());
+		tag.put("EncodedRequest", CatnipCodecUtils.encode(PackageOrder.CODEC, registries, encodedRequest).orElseThrow());
+		tag.put("EncodedRequestContext", CatnipCodecUtils.encode(PackageOrder.CODEC, registries, encodedRequestContext).orElseThrow());
 	}
 
 	public InteractionResult use(Player player) {

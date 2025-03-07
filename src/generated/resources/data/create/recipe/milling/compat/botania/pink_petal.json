@@ -14,7 +14,7 @@
   "processing_time": 50,
   "results": [
     {
-      "item": "minecraft:pink_dye"
+      "id": "minecraft:pink_dye"
     }
   ]
 }

@@ -22,6 +22,6 @@
     "minecraft:dropper",
     "minecraft:chiseled_bookshelf",
     "minecraft:jukebox",
-    "#forge:barrels"
+    "#c:barrels"
   ]
 }

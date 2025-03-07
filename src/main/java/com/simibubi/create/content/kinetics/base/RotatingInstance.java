@@ -3,7 +3,7 @@ package com.simibubi.create.content.kinetics.base;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-import com.simibubi.create.infrastructure.config.AllConfigs;
+import com.simibubi.create.content.kinetics.KineticDebugger;
 
 import dev.engine_room.flywheel.api.instance.InstanceHandle;
 import dev.engine_room.flywheel.api.instance.InstanceType;
@@ -69,7 +69,7 @@ public class RotatingInstance extends ColoredLitOverlayInstance {
 			.setRotationalSpeed(speed * RotatingInstance.SPEED_MULTIPLIER)
 			.setRotationOffset(KineticBlockEntityVisual.rotationOffset(blockState, axis, pos) + blockEntity.getRotationAngleOffset(axis));
 
-		if (AllConfigs.client().rainbowDebug.get())
+		if (KineticDebugger.isActive())
 			instance.setColor(blockEntity);
 
 		return instance;

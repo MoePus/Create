@@ -20,17 +20,15 @@
   "results": [
     {
       "count": 2,
-      "item": "druidcraft:moonstone"
+      "id": "druidcraft:moonstone"
     },
     {
       "chance": 0.5,
-      "item": "druidcraft:moonstone"
+      "id": "druidcraft:moonstone"
     },
     {
       "chance": 0.125,
-      "item": {
-        "id": "minecraft:cobblestone"
-      }
+      "id": "minecraft:cobblestone"
     }
   ]
 }

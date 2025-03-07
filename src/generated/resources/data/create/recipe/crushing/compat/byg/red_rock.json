@@ -19,9 +19,7 @@
   "processing_time": 150,
   "results": [
     {
-      "item": {
-        "id": "minecraft:red_sand"
-      }
+      "id": "minecraft:red_sand"
     }
   ]
 }

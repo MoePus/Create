@@ -7,55 +7,37 @@
   "results": [
     {
       "chance": 120.0,
-      "item": {
-        "id": "create:precision_mechanism"
-      }
+      "id": "create:precision_mechanism"
     },
     {
       "chance": 8.0,
-      "item": {
-        "id": "create:golden_sheet"
-      }
+      "id": "create:golden_sheet"
     },
     {
       "chance": 8.0,
-      "item": {
-        "id": "create:andesite_alloy"
-      }
+      "id": "create:andesite_alloy"
     },
     {
       "chance": 5.0,
-      "item": {
-        "id": "create:cogwheel"
-      }
+      "id": "create:cogwheel"
     },
     {
       "chance": 3.0,
-      "item": {
-        "id": "minecraft:gold_nugget"
-      }
+      "id": "minecraft:gold_nugget"
     },
     {
       "chance": 2.0,
-      "item": {
-        "id": "create:shaft"
-      }
+      "id": "create:shaft"
     },
     {
       "chance": 2.0,
-      "item": {
-        "id": "create:crushed_raw_gold"
-      }
+      "id": "create:crushed_raw_gold"
     },
     {
-      "item": {
-        "id": "minecraft:iron_ingot"
-      }
+      "id": "minecraft:iron_ingot"
     },
     {
-      "item": {
-        "id": "minecraft:clock"
-      }
+      "id": "minecraft:clock"
     }
   ],
   "sequence": [
@@ -71,9 +53,7 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_precision_mechanism"
-          }
+          "id": "create:incomplete_precision_mechanism"
         }
       ]
     },
@@ -89,9 +69,7 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_precision_mechanism"
-          }
+          "id": "create:incomplete_precision_mechanism"
         }
       ]
     },
@@ -107,16 +85,12 @@
       ],
       "results": [
         {
-          "item": {
-            "id": "create:incomplete_precision_mechanism"
-          }
+          "id": "create:incomplete_precision_mechanism"
         }
       ]
     }
   ],
   "transitional_item": {
-    "item": {
-      "id": "create:incomplete_precision_mechanism"
-    }
+    "id": "create:incomplete_precision_mechanism"
   }
 }

@@ -61,7 +61,7 @@ public class BlockEntityRenderHelper {
 				continue;
 			}
 
-			if (!renderer.shouldRender(blockEntity, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()))
+			if (renderWorld == null && !renderer.shouldRender(blockEntity, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()))
 				continue;
 
 			BlockPos pos = blockEntity.getBlockPos();

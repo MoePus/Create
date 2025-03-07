@@ -15,21 +15,19 @@
   "results": [
     {
       "count": 2,
-      "item": "byg:anthracite"
+      "id": "byg:anthracite"
     },
     {
       "chance": 0.5,
-      "item": "byg:anthracite"
+      "id": "byg:anthracite"
     },
     {
       "chance": 0.75,
-      "item": {
-        "id": "create:experience_nugget"
-      }
+      "id": "create:experience_nugget"
     },
     {
       "chance": 0.125,
-      "item": "byg:brimstone"
+      "id": "byg:brimstone"
     }
   ]
 }

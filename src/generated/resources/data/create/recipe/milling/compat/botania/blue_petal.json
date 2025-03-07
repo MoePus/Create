@@ -14,7 +14,7 @@
   "processing_time": 50,
   "results": [
     {
-      "item": "minecraft:blue_dye"
+      "id": "minecraft:blue_dye"
     }
   ]
 }

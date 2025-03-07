@@ -15,21 +15,19 @@
   "results": [
     {
       "count": 2,
-      "item": "byg:ametrine_gems"
+      "id": "byg:ametrine_gems"
     },
     {
       "chance": 0.25,
-      "item": "byg:ametrine_gems"
+      "id": "byg:ametrine_gems"
     },
     {
       "chance": 0.75,
-      "item": {
-        "id": "create:experience_nugget"
-      }
+      "id": "create:experience_nugget"
     },
     {
       "chance": 0.125,
-      "item": "byg:cobbled_ether_stone"
+      "id": "byg:cobbled_ether_stone"
     }
   ]
 }
