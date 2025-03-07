@@ -39,4 +39,9 @@ public class ServerboundChainConveyorRidingPacket extends BlockEntityConfigurati
 		else
 			ServerChainConveyorHandler.handleTTLPacket(sender);
 	}
+
+	@Override
+	protected int maxRange() {
+		return 256;
+	}
 }
