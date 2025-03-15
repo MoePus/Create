@@ -155,8 +155,9 @@ public class CrushingWheelControllerBlockEntity extends SmartBlockEntity {
 
 			// Output Items
 			if (facing != Direction.UP) {
-				BlockPos nextPos = worldPosition.offset(facing.getAxis() == Axis.X ? 1 * offset : 0, -1,
-					facing.getAxis() == Axis.Z ? 1 * offset : 0);
+				BlockPos nextPos = worldPosition.below()
+					.relative(facing, facing.getAxis() == Axis.Y ? 0 : 1);
+
 				DirectBeltInputBehaviour behaviour =
 					BlockEntityBehaviour.get(level, nextPos, DirectBeltInputBehaviour.TYPE);
 				if (behaviour != null) {

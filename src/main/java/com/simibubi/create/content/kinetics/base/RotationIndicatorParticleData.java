@@ -30,7 +30,7 @@ public class RotationIndicatorParticleData
 				.forGetter(p -> p.radius1),
 			Codec.FLOAT.fieldOf("radius2")
 				.forGetter(p -> p.radius2),
-			Codec.INT.fieldOf("lifeSpan")
+			Codec.INT.fieldOf("life_span")
 				.forGetter(p -> p.lifeSpan),
 			Axis.CODEC.fieldOf("axis")
 				.forGetter(p -> p.axis))

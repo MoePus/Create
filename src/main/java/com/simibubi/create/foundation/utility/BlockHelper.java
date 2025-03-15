@@ -67,7 +67,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
-
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.SpecialPlantable;
 import net.neoforged.neoforge.event.level.BlockDropsEvent;
@@ -246,14 +245,12 @@ public class BlockHelper {
 			// entities as a side-effect
 			Registry<Enchantment> enchantmentRegistry = world.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
 			if (state.getBlock() instanceof IceBlock && usedTool.getEnchantmentLevel(enchantmentRegistry.getHolderOrThrow(Enchantments.SILK_TOUCH)) == 0) {
-				if (world.dimensionType()
-					.ultraWarm())
-					return;
-
-				BlockState blockstate = world.getBlockState(pos.below());
-				if (blockstate.blocksMotion() || blockstate.liquid())
-					world.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-				return;
+				if (!world.dimensionType().ultraWarm()) {
+					BlockState below = world.getBlockState(pos.below());
+					if (below.blocksMotion() || below.liquid()) {
+						fluidState = IceBlock.meltsInto().getFluidState();
+					}
+				}
 			}
 
 			state.spawnAfterBreak((ServerLevel) world, pos, ItemStack.EMPTY, true);

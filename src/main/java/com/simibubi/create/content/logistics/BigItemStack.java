@@ -1,7 +1,6 @@
 package com.simibubi.create.content.logistics;
 
 import java.util.Comparator;
-import java.util.Objects;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

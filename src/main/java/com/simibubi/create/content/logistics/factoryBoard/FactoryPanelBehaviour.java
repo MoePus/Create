@@ -38,6 +38,7 @@ import com.simibubi.create.content.logistics.packagerLink.LogisticsManager;
 import com.simibubi.create.content.logistics.packagerLink.RequestPromise;
 import com.simibubi.create.content.logistics.packagerLink.RequestPromiseQueue;
 import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
+import com.simibubi.create.content.logistics.stockTicker.PackageOrderWithCrafts;
 import com.simibubi.create.content.schematics.requirement.ItemRequirement;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -434,20 +435,21 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 
 		// Input items may come from differing networks
 		Map<UUID, Collection<BigItemStack>> asMap = toRequest.asMap();
-		PackageOrder requestContext = new PackageOrder(toRequestAsList);
+		PackageOrderWithCrafts craftingContext = PackageOrderWithCrafts.empty();
 		List<Multimap<PackagerBlockEntity, PackagingRequest>> requests = new ArrayList<>();
 
 		// Panel may enforce item arrangement
 		if (!activeCraftingArrangement.isEmpty())
-			requestContext = new PackageOrder(activeCraftingArrangement.stream()
+			craftingContext = PackageOrderWithCrafts.singleRecipe(activeCraftingArrangement.stream()
 				.map(BigItemStack::new)
 				.toList());
 
 		// Collect request distributions
 		for (Entry<UUID, Collection<BigItemStack>> entry : asMap.entrySet()) {
-			PackageOrder order = new PackageOrder(new ArrayList<>(entry.getValue()));
+			PackageOrderWithCrafts order =
+				new PackageOrderWithCrafts(new PackageOrder(new ArrayList<>(entry.getValue())), craftingContext.orderedCrafts());
 			Multimap<PackagerBlockEntity, PackagingRequest> request =
-				LogisticsManager.findPackagersForRequest(entry.getKey(), order, requestContext, null, recipeAddress);
+				LogisticsManager.findPackagersForRequest(entry.getKey(), order, null, recipeAddress);
 			requests.add(request);
 		}
 
@@ -492,12 +494,12 @@ public class FactoryPanelBehaviour extends FilteringBehaviour implements MenuPro
 		int amountToOrder = Math.clamp(demand - promised - inStorage, 0, maxStackSize * 9);
 
 		BigItemStack orderedItem = new BigItemStack(item, Math.min(amountToOrder, availableOnNetwork));
-		PackageOrder order = new PackageOrder(List.of(orderedItem));
+		PackageOrderWithCrafts order = PackageOrderWithCrafts.simple(List.of(orderedItem));
 
 		sendEffect(getPanelPosition(), true);
 
 		if (!LogisticsManager.broadcastPackageRequest(network, RequestType.RESTOCK, order,
-			packager.targetInventory.getIdentifiedInventory(), recipeAddress, null))
+			packager.targetInventory.getIdentifiedInventory(), recipeAddress))
 			return;
 
 		restockerPromises.add(new RequestPromise(orderedItem));

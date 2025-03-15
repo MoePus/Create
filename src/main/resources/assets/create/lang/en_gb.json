@@ -105,6 +105,7 @@
   "create.ponder.brass_tunnel_modes.text_8": "'Prefer Nearest' prioritises the outputs closest to the items' input location",
   "create.ponder.brass_tunnel_modes.text_9": "'Randomise' will distribute whole stacks to randomly picked outputs",
   "create.ponder.mechanical_arm_modes.text_9": "Prefer First prioritises the outputs selected earliest when configuring this Arm",
+  "create.ponder.mod_name": "Create",
   "create.ponder.stabilized_bearings.header": "Stabilised Contraptions",
   "create.ponder.train_assembly.text_14": "When used on a station, maps will add a Labelled marker at the location",
   "create.ponder.train_schedule.text_3": "Once programmed, the Schedule can be handed off to a Train Driver",
@@ -120,5 +121,6 @@
   "item.create.netherite_backtank.tooltip.behaviour1": "Provides _Pressurised_ _Air_ to Equipment that requires it.",
   "item.create.netherite_backtank.tooltip.behaviour2": "_Collects_ _Pressurised_ _Air_ at a rate depending on the Rotational Speed.",
   "item.create.netherite_backtank.tooltip.summary": "A _Wearable_ _Tank_ for carrying Pressurised Air.",
-  "item.create.tree_fertilizer": "Tree Fertiliser"
+  "item.create.tree_fertilizer": "Tree Fertiliser",
+  "itemGroup.create.base": "Create"
 }

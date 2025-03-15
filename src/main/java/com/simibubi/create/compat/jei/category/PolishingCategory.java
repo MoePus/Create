@@ -2,6 +2,7 @@ package com.simibubi.create.compat.jei.category;
 
 import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.content.equipment.sandPaper.SandPaperItemComponent;
 import com.simibubi.create.content.equipment.sandPaper.SandPaperPolishingRecipe;
 import com.simibubi.create.content.processing.recipe.ProcessingOutput;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
@@ -54,7 +55,7 @@ public class PolishingCategory extends CreateRecipeCategory<SandPaperPolishingRe
 		if (matchingStacks.length == 0)
 			return;
 
-		renderedSandpaper.set(AllDataComponents.SAND_PAPER_POLISHING, matchingStacks[0]);
+		renderedSandpaper.set(AllDataComponents.SAND_PAPER_POLISHING, new SandPaperItemComponent(matchingStacks[0]));
 		renderedSandpaper.set(AllDataComponents.SAND_PAPER_JEI, Unit.INSTANCE);
 		GuiGameElement.of(renderedSandpaper)
 				.<GuiGameElement.GuiRenderBuilder>at(getBackground().getWidth() / 2 - 16, 0, 0)

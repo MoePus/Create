@@ -1,4 +1,4 @@
-package com.simibubi.create.content.logistics.packager;
+package com.simibubi.create.content.logistics.packager.repackager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +10,15 @@ import com.simibubi.create.AllDataComponents;
 import com.simibubi.create.content.logistics.BigItemStack;
 import com.simibubi.create.content.logistics.box.PackageItem;
 import com.simibubi.create.content.logistics.box.PackageItem.PackageOrderData;
-import com.simibubi.create.content.logistics.stockTicker.PackageOrder;
+import com.simibubi.create.content.logistics.packager.InventorySummary;
+import com.simibubi.create.content.logistics.stockTicker.PackageOrderWithCrafts;
+import com.simibubi.create.content.logistics.stockTicker.PackageOrderWithCrafts.CraftingEntry;
 
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-public class PackageDefragmenter {
+public class PackageRepackageHelper {
 
 	protected Map<Integer, List<ItemStack>> collectedPackages = new HashMap<>();
 
@@ -24,12 +27,7 @@ public class PackageDefragmenter {
 	}
 
 	public boolean isFragmented(ItemStack box) {
-		if (!box.has(AllDataComponents.PACKAGE_ORDER_DATA))
-			return false;
-
-		PackageOrderData data = box.get(AllDataComponents.PACKAGE_ORDER_DATA);
-
-		return !(data.linkIndex() == 0 && data.isFinalLink() && data.fragmentIndex() == 0 && data.isFinal());
+		return box.has(AllDataComponents.PACKAGE_ORDER_DATA);
 	}
 
 	public int addPackageFragment(ItemStack box) {
@@ -46,44 +44,40 @@ public class PackageDefragmenter {
 		return collectedOrderId;
 	}
 
-	public List<ItemStack> repack(int orderId) {
-		List<ItemStack> exportingPackages = new ArrayList<>();
+	public List<BigItemStack> repack(int orderId, RandomSource r) {
+		List<BigItemStack> exportingPackages = new ArrayList<>();
 		String address = "";
-		PackageOrder orderContext = null;
-		List<BigItemStack> allItems = new ArrayList<>();
+		PackageOrderWithCrafts orderContext = null;
+		InventorySummary summary = new InventorySummary();
 
 		for (ItemStack box : collectedPackages.get(orderId)) {
 			address = PackageItem.getAddress(box);
 			if (box.has(AllDataComponents.PACKAGE_ORDER_DATA)) {
-				PackageOrder context = box.get(AllDataComponents.PACKAGE_ORDER_DATA).orderContext();
+				PackageOrderWithCrafts context = box.get(AllDataComponents.PACKAGE_ORDER_DATA).orderContext();
 				if (context != null && !context.isEmpty())
 					orderContext = context;
 			}
+
 			ItemStackHandler contents = PackageItem.getContents(box);
-			Slots: for (int slot = 0; slot < contents.getSlots(); slot++) {
-				ItemStack stackInSlot = contents.getStackInSlot(slot);
-				for (BigItemStack existing : allItems) {
-					if (!ItemStack.isSameItemSameComponents(stackInSlot, existing.stack))
-						continue;
-					existing.count += stackInSlot.getCount();
-					continue Slots;
-				}
-				allItems.add(new BigItemStack(stackInSlot, stackInSlot.getCount()));
-			}
+			for (int slot = 0; slot < contents.getSlots(); slot++)
+				summary.add(contents.getStackInSlot(slot));
 		}
 
 		List<BigItemStack> orderedStacks = new ArrayList<>();
-		List<BigItemStack> originalContext = new ArrayList<>();
 		if (orderContext != null) {
-			for (BigItemStack stack : orderContext.stacks()) {
-				orderedStacks.add(new BigItemStack(stack.stack, stack.count));
-				originalContext.add(new BigItemStack(stack.stack, stack.count));
-			}
+			List<BigItemStack> packagesSplitByRecipe = repackBasedOnRecipes(summary, orderContext, address, r);
+			exportingPackages.addAll(packagesSplitByRecipe);
+			
+			if (packagesSplitByRecipe.isEmpty())
+				for (BigItemStack stack : orderContext.stacks())
+					orderedStacks.add(new BigItemStack(stack.stack, stack.count));
 		}
 
+		List<BigItemStack> allItems = summary.getStacks();
 		List<ItemStack> outputSlots = new ArrayList<>();
 
-		Repack: while (true) {
+		Repack:
+		while (true) {
 			allItems.removeIf(e -> e.count == 0);
 			if (allItems.isEmpty())
 				break;
@@ -92,7 +86,8 @@ public class PackageDefragmenter {
 			if (!orderedStacks.isEmpty())
 				targetedEntry = orderedStacks.remove(0);
 
-			ItemSearch: for (BigItemStack entry : allItems) {
+			ItemSearch:
+			for (BigItemStack entry : allItems) {
 				int targetAmount = entry.count;
 				if (targetAmount == 0)
 					continue;
@@ -126,7 +121,7 @@ public class PackageDefragmenter {
 			target.setStackInSlot(currentSlot++, item);
 			if (currentSlot < PackageItem.SLOTS)
 				continue;
-			exportingPackages.add(PackageItem.containing(target));
+			exportingPackages.add(new BigItemStack(PackageItem.containing(target), 1));
 			target = new ItemStackHandler(PackageItem.SLOTS);
 			currentSlot = 0;
 		}
@@ -134,17 +129,19 @@ public class PackageDefragmenter {
 		for (int slot = 0; slot < target.getSlots(); slot++)
 			if (!target.getStackInSlot(slot)
 				.isEmpty()) {
-				exportingPackages.add(PackageItem.containing(target));
+				exportingPackages.add(new BigItemStack(PackageItem.containing(target), 1));
 				break;
 			}
 
-		for (ItemStack box : exportingPackages)
-			PackageItem.addAddress(box, address);
+		for (BigItemStack box : exportingPackages)
+			PackageItem.addAddress(box.stack, address);
 
 		for (int i = 0; i < exportingPackages.size(); i++) {
-			ItemStack box = exportingPackages.get(i);
+			BigItemStack box = exportingPackages.get(i);
 			boolean isfinal = i == exportingPackages.size() - 1;
-			PackageItem.setOrder(box, orderId, 0, true, 0, true, isfinal ? new PackageOrder(originalContext) : null);
+			PackageOrderWithCrafts outboundOrderContext = isfinal && orderContext != null ? orderContext : null;
+			if (PackageItem.getOrderId(box.stack) == -1)
+				PackageItem.setOrder(box.stack, orderId, 0, true, 0, true, outboundOrderContext);
 		}
 
 		return exportingPackages;
@@ -152,10 +149,12 @@ public class PackageDefragmenter {
 
 	private boolean isOrderComplete(int orderId) {
 		boolean finalLinkReached = false;
-		Links: for (int linkCounter = 0; linkCounter < 1000; linkCounter++) {
+		Links:
+		for (int linkCounter = 0; linkCounter < 1000; linkCounter++) {
 			if (finalLinkReached)
 				break;
-			Packages: for (int packageCounter = 0; packageCounter < 1000; packageCounter++) {
+			Packages:
+			for (int packageCounter = 0; packageCounter < 1000; packageCounter++) {
 				for (ItemStack box : collectedPackages.get(orderId)) {
 					PackageOrderData data = box.get(AllDataComponents.PACKAGE_ORDER_DATA);
 					if (linkCounter != data.linkIndex())
@@ -171,6 +170,39 @@ public class PackageDefragmenter {
 			}
 		}
 		return true;
+	}
+
+	protected List<BigItemStack> repackBasedOnRecipes(InventorySummary summary, PackageOrderWithCrafts order, String address, RandomSource r) {
+		if (order.orderedCrafts().isEmpty())
+			return List.of();
+		
+		List<BigItemStack> packages = new ArrayList<>();
+		for (CraftingEntry craftingEntry : order.orderedCrafts()) {
+			int packagesToCreate = 0;
+			Crafts: for (int i = 0; i < craftingEntry.count(); i++) {
+				for (BigItemStack required : craftingEntry.pattern().stacks()) {
+					if (required.stack.isEmpty())
+						continue;
+					if (summary.getCountOf(required.stack) <= 0)
+						break Crafts;
+					summary.add(required.stack, -1);
+				}
+				packagesToCreate++;
+			}
+			
+			ItemStackHandler target = new ItemStackHandler(PackageItem.SLOTS);
+			List<BigItemStack> stacks = craftingEntry.pattern().stacks();
+			for (int currentSlot = 0; currentSlot < Math.min(stacks.size(), target.getSlots()); currentSlot++)
+				target.setStackInSlot(currentSlot, stacks.get(currentSlot).stack.copy());
+			
+			ItemStack box = PackageItem.containing(target);
+			PackageItem.setOrder(box, r.nextInt(), 0, true, 0, true,
+				PackageOrderWithCrafts.singleRecipe(craftingEntry.pattern()
+					.stacks()));
+			packages.add(new BigItemStack(box, packagesToCreate));
+		}
+		
+		return packages;
 	}
 
 }

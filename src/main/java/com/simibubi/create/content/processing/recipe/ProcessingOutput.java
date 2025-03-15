@@ -99,7 +99,7 @@ public class ProcessingOutput {
 		Codec.INT.optionalFieldOf("count", 1).forGetter(s -> s.count),
 		Codec.FLOAT.optionalFieldOf("chance", 1F).forGetter(s -> s.chance)
 	).apply(i, (item, count, chance) -> item.map(
-		stack -> new ProcessingOutput(stack.getItem(), count, chance),
+		stack -> new ProcessingOutput(stack.getItem(), count, stack.getComponentsPatch(), chance),
 		compat -> new ProcessingOutput(compat.getFirst(), compat.getSecond(), chance)
 	)));
 
@@ -122,7 +122,7 @@ public class ProcessingOutput {
 		compat -> new ProcessingOutput(compat, count, chance)
 	)));
 
-	// Remove fallback in 1.22
+	// TODO - Remove fallback in 1.22
 	public static final Codec<ProcessingOutput> CODEC = Codec.withAlternative(CODEC_NEW, CODEC_OLD);
 
 }

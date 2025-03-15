@@ -350,7 +350,7 @@ public class DeployerHandler {
 		}
 
 		if (stack.getItem() instanceof SandPaperItem && stack.has(AllDataComponents.SAND_PAPER_POLISHING)) {
-			player.spawnedItemEffects = stack.get(AllDataComponents.SAND_PAPER_POLISHING);
+			player.spawnedItemEffects = stack.get(AllDataComponents.SAND_PAPER_POLISHING).item();
 			AllSoundEvents.SANDING_SHORT.playOnServer(world, pos, .25f, 1f);
 		}
 
